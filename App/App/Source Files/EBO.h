@@ -6,13 +6,13 @@
 
 class EBO {
 private:
-	unsigned int count;
-	unsigned int id;
+	GLuint count;
+	GLuint id;
 public:
-	EBO(const unsigned int* indices, unsigned int count);
+	EBO(const GLuint* indices, GLuint count);
 	void bind() const;
 	void unbind() const;
-	void del() const;
-	unsigned int get_count() const;
+	void del();
+	GLuint get_count() const;
 };
 #endif

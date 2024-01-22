@@ -6,11 +6,11 @@
 
 class VBO {
 private:
-	unsigned int id;
+	GLuint id;
 public:
-	VBO(const float* vertices, unsigned int size);
+	VBO(GLsizeiptr size, const GLfloat* vertices);
 	void bind() const;
 	void unbind() const;
-	void del() const;
+	void del();
 };
 #endif

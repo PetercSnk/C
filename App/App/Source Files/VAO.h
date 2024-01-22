@@ -6,12 +6,13 @@
 #include "VBO.h"
 
 class VAO {
+private:
+	GLuint id;
 public:
-	unsigned int id;
 	VAO();
-	void link(VBO VBO, unsigned int layout);
-	void bind();
-	void unbind();
+	void linkAttrib(VBO& VBO, GLuint index, GLuint size, GLenum type, GLboolean normalized, GLsizeiptr stride, GLvoid* offset);
+	void bind() const;
+	void unbind() const;
 	void del();
 };
 #endif

@@ -4,9 +4,10 @@
 
 #include "VBO.h"
 #include "EBO.h"
+#include "VAO.h"
 #include "Shader.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void framebuffer_size_callback(GLFWwindow* window, GLint width, GLint height);
 void processInput(GLFWwindow* window);
 
 int main() {
@@ -59,23 +60,22 @@ int main() {
 
 
 	// generate and bind vertex array object, this stores the vertex attribute configuration and which VBO / EBO to use
-	unsigned int VAO;
+	/*unsigned int VAO;
 	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	glBindVertexArray(VAO);*/
+	VAO vao;
+	vao.bind();
 
-	VBO v(positions, 18 * sizeof(float));
+	VBO vbo(18 * sizeof(float), positions);
 
-
-	// specify how vertex data should be intpreted
 	// position attributes
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	vao.linkAttrib(vbo, 0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	// color attributes
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	// enable the vertex attribute(s) with the vertex attribute location as its argument
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	v.unbind();
-	glBindVertexArray(0);
+	vao.linkAttrib(vbo, 1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+
+	vao.unbind();
+	vbo.unbind();
+
 	
 
 	// create program object with vertex and fragment shader sources
@@ -88,21 +88,24 @@ int main() {
 
 	// keep running until we tell GLFW to stop
 	while (!glfwWindowShouldClose(window)) {
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		shader.activate();
 		// check input
 		processInput(window);
+
 		// render commands
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		vao.bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	
 
 		/*float t = glfwgettime();
 		float r = (sin(t));
 		int color = glgetuniformlocation(shader_program, "color");
 		gluniform4f(color, r, 1.0f, 1.0f, 1.0f);*/
-
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
@@ -115,15 +118,15 @@ int main() {
 	
 	
 	//glDeleteBuffers(1, &EBO);
-	glDeleteVertexArrays(1, &VAO);
-	v.del();
+	vao.del();
+	vbo.del();
 	shader.del();
 	glfwTerminate();
 	return 0;
 }
 
 // callback function to resize rendering window
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow* window, GLint width, GLint height) {
 	glViewport(0, 0, width, height);
 }
 

@@ -23,12 +23,12 @@ std::string read_binary_file(const char* path) {
 	}
 }
 
-static unsigned int create_shader(const char* vertex_shader, const char* fragment_shader) {
+static GLuint create_shader(const char* vertex_shader, const char* fragment_shader) {
 	// compile both vertex and fragment shaders
-	unsigned int vs_id = compile_shader(GL_VERTEX_SHADER, vertex_shader);
-	unsigned int fs_id = compile_shader(GL_FRAGMENT_SHADER, fragment_shader);
+	GLuint vs_id = compile_shader(GL_VERTEX_SHADER, vertex_shader);
+	GLuint fs_id = compile_shader(GL_FRAGMENT_SHADER, fragment_shader);
 	// create program, this returns an id reference to program object
-	unsigned int shader_program = glCreateProgram();
+	GLuint shader_program = glCreateProgram();
 	// attach compiled shaders to program object and link them
 	glAttachShader(shader_program, vs_id);
 	glAttachShader(shader_program, fs_id);
@@ -49,9 +49,9 @@ static unsigned int create_shader(const char* vertex_shader, const char* fragmen
 	return shader_program;
 }
 
-static unsigned int compile_shader(unsigned int type, const char* shader) {
+static GLuint compile_shader(GLenum type, const char* shader) {
 	// type defines what shader is created e.g. GL_VERTEX_SHADER or GL_FRAGMENT_SHADER, result is shader object referenced by an id
-	unsigned int id = glCreateShader(type);
+	GLuint id = glCreateShader(type);
 	// attach the shader source code to the shader object and compile
 	glShaderSource(id, 1, &shader, nullptr);
 	glCompileShader(id);

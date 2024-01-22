@@ -9,13 +9,13 @@
 #include <string>
 
 std::string read_binary_file(const char* path);
-static unsigned int create_shader(const char* vertex_shader_source, const char* fragment_shader_source);
-static unsigned int compile_shader(unsigned int type, const char* source);
+static GLuint create_shader(const char* vertex_shader, const char* fragment_shader);
+static GLuint compile_shader(GLenum type, const char* shader);
 
 class Shader {
 public:
 	// shader program identifier
-	unsigned int shader_program;
+	GLuint shader_program;
 	// constructor reads and builds shaders
 	Shader(const char* vertex_path, const char* fragment_path);
 	// activates shader program
