@@ -73,17 +73,27 @@ static GLuint compile_shader(GLenum type, const char* shader) {
 }
 
 Shader::Shader(const char* vertex_path, const char* fragment_path) {
+	// read both vertex and fragment shaders
 	std::string vertex_shader = read_binary_file(vertex_path);
 	std::string fragment_shader = read_binary_file(fragment_path);
+	// convert strings to c strings
 	const char* vertex_shader_cstr = vertex_shader.c_str();
 	const char* fragment_shader_cstr = fragment_shader.c_str();
+	// create program object and compile, attach, and link shaders
 	shader_program = create_shader(vertex_shader_cstr, fragment_shader_cstr);
 }
 
-void Shader::activate() {
+// install the program object that is to be used in current rendering
+void Shader::bind() const {
 	glUseProgram(shader_program);
 }
 
+// binding zero removes the currently available program object
+void Shader::unbind() const {
+	glUseProgram(0);
+}
+
+// free memory and invalidate the program object
 void Shader::del() {
 	glDeleteProgram(shader_program);
 }

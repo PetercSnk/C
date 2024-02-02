@@ -6,6 +6,7 @@
 #include "EBO.h"
 #include "VAO.h"
 #include "Shader.h"
+#include "Renderer.h"
 
 void framebuffer_size_callback(GLFWwindow* window, GLint width, GLint height);
 void processInput(GLFWwindow* window);
@@ -38,19 +39,11 @@ int main() {
 	
 	// test
 
-	// 2d triangle
 	float positions[] = {
-		-0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		 0.0f,  0.7f, 0.0f, 0.0f, 0.0f, 1.0f,
-	};
-
-	// rectangle
-	float rectangle[] = {
-		-0.5f,  0.5f, 0.0f, // top left
-		 0.5f,  0.5f, 0.0f, // top right
-		-0.5f, -0.5f, 0.0f, // bottom left
-		 0.5f, -0.5f, 0.0f  // bottom right
+		-0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f, // bottom left
+		-0.5f,	0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // top left
+		 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom right
+		 0.5f,	0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // top right
 	};
 
 	unsigned int indices[] = {
@@ -58,15 +51,11 @@ int main() {
 		1, 2, 3
 	};
 
-
-	// generate and bind vertex array object, this stores the vertex attribute configuration and which VBO / EBO to use
-	/*unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);*/
 	VAO vao;
 	vao.bind();
 
-	VBO vbo(18 * sizeof(float), positions);
+	VBO vbo(24 * sizeof(float), positions);
+	EBO ebo(6, indices);
 
 	// position attributes
 	vao.linkAttrib(vbo, 0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
@@ -75,8 +64,9 @@ int main() {
 
 	vao.unbind();
 	vbo.unbind();
+	ebo.unbind();
 
-	
+	Renderer renderer;
 
 	// create program object with vertex and fragment shader sources
 	Shader shader("D:\\Repository\\C\\App\\App\\Resource Files\\Shaders\\default.vert", "D:\\Repository\\C\\App\\App\\Resource Files\\Shaders\\default.frag");
@@ -88,38 +78,21 @@ int main() {
 
 	// keep running until we tell GLFW to stop
 	while (!glfwWindowShouldClose(window)) {
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		shader.activate();
-		// check input
+		// input
 		processInput(window);
-
-		// render commands
-
-		vao.bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	
-
-		/*float t = glfwgettime();
-		float r = (sin(t));
-		int color = glgetuniformlocation(shader_program, "color");
-		gluniform4f(color, r, 1.0f, 1.0f, 1.0f);*/
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-
+		// render 
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		renderer.clear();
+		renderer.draw(shader, vao, ebo);
 		// swaps colour buffer, used to render during this render iteration and show output to screen
 		glfwSwapBuffers(window);
 		// checks for event triggers
 		glfwPollEvents();
 	}
 	// de-allocate all resources
-	
-	
-	//glDeleteBuffers(1, &EBO);
 	vao.del();
 	vbo.del();
+	ebo.del();
 	shader.del();
 	glfwTerminate();
 	return 0;

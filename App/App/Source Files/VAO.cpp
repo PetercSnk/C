@@ -1,31 +1,34 @@
 #include "VAO.h"
 
-// constructor generates id for the VAO
+// VAO constructor
 VAO::VAO() {
+	// generate one vertex array object name in id for this VAO instance
 	glGenVertexArrays(1, &id);
 }
 
-// links VBO attributes to the VAO
+// link a VBOs vertex data to this vertex array object
 void VAO::linkAttrib(VBO& VBO, GLuint index, GLuint size, GLenum type, GLboolean normalized, GLsizeiptr stride, GLvoid* offset) {
+	// bind the VBO whose vertices are to be defined
 	VBO.bind();
-	// specify how vertex data should be intpreted
+	// define how the VBOs vertex data should be intpreted
 	glVertexAttribPointer(index, size, type, normalized, stride, offset);
-	// enable the vertex attribute with the vertex attribute location as its argument
+	// enable the vertex attribute array
 	glEnableVertexAttribArray(index);
+	// unbind the bound VBO
 	VBO.unbind();
 }
 
-// bind VAO
+// bind the vertex array object with name id
 void VAO::bind() const {
 	glBindVertexArray(id);
 }
 
-// unbind VAO
+// binding zero will break the existing vertex array object binding
 void VAO::unbind() const {
 	glBindVertexArray(0);
 }
 
-// delete VAO
+// delete vertex array object and its contents
 void VAO::del() {
 	glDeleteVertexArrays(1, &id);
 }

@@ -1,31 +1,33 @@
 #include "EBO.h"
 
-EBO::EBO(const GLuint* indices, GLuint count) : 
+// EBO constructor
+EBO::EBO(GLuint count, const GLuint* indices) :
+	// set this count to count
 	count(count) {
-	// create unique buffer id for EBO
+	// generate one buffer object name in id for this EBO instance
 	glGenBuffers(1, &id);
-	// bind EBO to GL_ELEMENT_ARRAY
+	// bind buffer object to GL_ELEMENT_ARRAY_BUFFER
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
-	// copy defined data into buffers memory
+	// copy indices data into the buffer object bound to GL_ELEMENT_ARRAY_BUFFER
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(GLuint), indices, GL_STATIC_DRAW);
 }
 
-// bind EBO
+// bind buffer object to GL_ELEMENT_ARRAY_BUFFER
 void EBO::bind() const {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
 }
 
-// unbind EBO
+// binding zero will unbind the current buffer object
 void EBO::unbind() const {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-// delete EBO
+// delete buffer object and its contents
 void EBO::del() {
 	glDeleteBuffers(1, &id);
 }
 
-// get number of indices
+// get the total number of indices in this buffer object
 GLuint EBO::get_count() const {
 	return count;
 }
